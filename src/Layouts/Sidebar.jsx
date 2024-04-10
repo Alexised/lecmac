@@ -5,11 +5,6 @@ function Sidebar(props) {
   const { isLoggedIn } = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.reload();
-  };
   if (isLoggedIn !== null && user !== null) {
     // user_permissions=user.permissions.data.map((item)=>{
     //     return item.name;
@@ -56,7 +51,7 @@ function Sidebar(props) {
                   to="/users"
                   className="nav-link px-0 align-middle mb-1 "
                 >
-                  <i className="fa fa-pencil"></i>{" "}
+                  <i className="fa fa-user"></i>{" "}
                   <span className="ms-1 d-none d-sm-inline ">Usuarios</span>
                 </NavLink>
               </li>

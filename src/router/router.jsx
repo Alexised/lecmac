@@ -6,6 +6,7 @@ import ListForms from "../components/form/ListForms.jsx";
 import ListFills from "../components/form/ListFills.jsx";
 import ListSignatures from "../components/signature/ListSignatures.jsx";
 import ListUsers from "../components/user/ListUsers.jsx";
+import CreateUser from "../components/user/createUser/CreateUser.jsx";
 import CreateForm from "../components/form/createForm/CreateForm.jsx";
 import FillForm from "../components/form/fillForm/FillForm.jsx";
 import CreateSignature from "../components/signature/createSignature/CreateSignature.jsx";
@@ -22,6 +23,7 @@ function Router(props) {
                 <Route path='/forms' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<ListForms></ListForms>}></Main>}/>
                 <Route path='/fills' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<ListFills></ListFills>}></Main>}/>
                 <Route path='/users' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<ListUsers></ListUsers>}></Main>}/>
+                <Route path='/user/create' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<CreateUser></CreateUser>}></Main>}/>
                 <Route path='/signature' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<ListSignatures></ListSignatures>}></Main>}/>
                 <Route path='/signature/create' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<CreateSignature></CreateSignature>}></Main>}/>
                 <Route path='/show/form/:code' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Main component={<FillForm show={true}></FillForm>}></Main>}/>
