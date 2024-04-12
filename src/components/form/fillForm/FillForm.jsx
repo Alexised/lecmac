@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import moment from 'moment';
 import html2canvas from 'html2canvas';
+import logo from "../../../assets/logo.jpg";
 
 const FillForm = ({ show }) => {
   const [form] = Form.useForm();
@@ -18,6 +19,8 @@ const FillForm = ({ show }) => {
   const [signatures, setSignatures] = useState([]);
   const [selectedSignature, setSelectedSignature] = useState('');
   const [imageBase64, setImageBase64] = useState('');
+  const [imageBase, setImageBase] = useState('');
+
 
   const fetchSignatures = async (code) => {
     try {
@@ -85,9 +88,9 @@ const FillForm = ({ show }) => {
     });
   };
 
-  const onChange = async (info) => {
+  const onChange = async (setImageBase, info) => {
     const base64 = await getBase64(info.file);
-    setImageBase64(base64);
+    setImageBase(base64);
   };
 
 
@@ -128,14 +131,13 @@ const FillForm = ({ show }) => {
         record: data.record,
       });
       setImageBase64(data.imageProduct);
+      setImageBase(data.imageProduct2)
       data.activities.map((activity, index) => {
         form.setFieldsValue({
           [`observations-${index}`]: activity.observations,
         });
       });
       setSelectedApto([data.apto]);
-      console.log(data.idsignature)
-      console.log(signatures)
       setSelectedSignature(data.idsignature);
     } else {
       const response = await axios.get(`${url}forms/${code}`, config);
@@ -178,6 +180,7 @@ const FillForm = ({ show }) => {
         activities: activities,
         idsignature: selectedSignature,
         imageProduct: imageBase64,
+        imageProduct2: imageBase,
       }
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}fills`, formDataToSend, {
         headers: {
@@ -228,10 +231,11 @@ const FillForm = ({ show }) => {
         <div style={{ textAlign: 'center' }}>
           <Typography.Title level={2}>CENTRO DE ENTRENAMIENTO</Typography.Title>
           <Typography.Title level={4}>{formData.name} - {formData.code}</Typography.Title>
+          {show && <Typography.Title level={4}>ID: {code}</Typography.Title>}
         </div>
         <Row >
           <Col lg={3} xs={24}>
-            <Label className="form-label">Código de Inspección Empresa</Label>
+            <Label className="form-label">Nombre de la Empresa</Label>
             <Form.Item
               name="codeInspectionCompany"
               rules={[{ required: true, message: 'Este campo es obligatorio' }]}
@@ -325,23 +329,43 @@ const FillForm = ({ show }) => {
         </Row>
         <>
           {show != true && (
-            <>
-              <Label className="form-label">Imagen del objeto a certificar </Label>
-              <Form.Item
-                name="image"
-                rules={[{ required: true, message: 'Este campo es obligatorio' }]}
-              >
-                <Upload.Dragger
-                  maxCount={1}
-                  onChange={onChange}
-                  beforeUpload={() => false}
+            <Row >
+              <Col lg={6} xs={24}>
+                <Label className="form-label">Imagen del objeto a certificar </Label>
+                <Form.Item
+                  name="image"
+                  rules={[{ required: true, message: 'Este campo es obligatorio' }]}
                 >
-                  <p className="ant-upload-drag-icon">
-                    Arrastra y suelta la imagen aquí o haz clic
-                  </p>
-                </Upload.Dragger>
-              </Form.Item>
-            </>
+                  <Upload.Dragger
+                    maxCount={1}
+                    onChange={(e) => onChange(setImageBase64, e)}
+                    beforeUpload={() => false}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      Arrastra y suelta la imagen aquí o haz clic
+                    </p>
+                  </Upload.Dragger>
+                </Form.Item>
+              </Col>
+              <Col lg={6} xs={24}>
+                <Label className="form-label">Imagen del objeto a certificar </Label>
+                <Form.Item
+                  name="image"
+                  rules={[{ required: true, message: 'Este campo es obligatorio' }]}
+                >
+                  <Upload.Dragger
+                    maxCount={1}
+                    onChange={(e) => onChange(setImageBase, e)}
+                    beforeUpload={() => false}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      Arrastra y suelta la imagen aquí o haz clic
+                    </p>
+                  </Upload.Dragger>
+                </Form.Item>
+              </Col>
+            </Row>
+
           )}
         </>
 
@@ -444,14 +468,24 @@ const FillForm = ({ show }) => {
             </Form.Item>
           </Col>
           {show == true && (
-            <Col lg={4} xs={24}>
-              <Label className="form-label">Imagen del Producto</Label>
-              <Form.Item
-                name="imageProduct"
-              >
-                <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
-              </Form.Item>
-            </Col>
+            <>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
+                </Form.Item>
+              </Col>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct2" src={`${imageBase}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
+                </Form.Item>
+              </Col>
+            </>
           )}
           {show != true && (
             <Col lg={3} xs={24}>
@@ -485,6 +519,18 @@ const FillForm = ({ show }) => {
               </div>
             )}
           </Col>
+          {show == true && (
+            <>
+              <Col lg={4} xs={24}>
+                <Label className="form-label">Certificado por</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct" src={`${logo}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
+                </Form.Item>
+              </Col>
+            </>
+          )}
         </Row>
       </div>
       {show !== true ? (

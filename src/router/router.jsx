@@ -9,6 +9,7 @@ import ListUsers from "../components/user/ListUsers.jsx";
 import CreateUser from "../components/user/createUser/CreateUser.jsx";
 import CreateForm from "../components/form/createForm/CreateForm.jsx";
 import FillForm from "../components/form/fillForm/FillForm.jsx";
+import ValidateForm from "../components/form/ValidateForm.jsx";
 import CreateSignature from "../components/signature/createSignature/CreateSignature.jsx";
 import Swal from "sweetalert2";
 import Login from "../pages/login/Login.jsx";
@@ -32,6 +33,7 @@ function Router(props) {
                 <Route path='/login' element={props.isLoggedIn===false ? <Login></Login>: <Navigate to='/'/>}/>
                 <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path='/change-password' element={<RecoveryPassword />} />
+                <Route path='/validate' element={<ValidateForm />} />
                 <Route path='*' element={props.isLoggedIn===false ? <Navigate to='/login'/>: <Navigate to='/'/>}/>
             </Routes>
         </div>

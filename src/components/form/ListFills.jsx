@@ -92,7 +92,7 @@ const ListFills = () => {
       ...getColumnSearchProps('id'),
     },
     {
-      title: 'Código de Inspección Empresa',
+      title: 'Nombre de la Empresa',
       dataIndex: 'codeInspectionCompany',
       key: 'codeInspectionCompany',
       ...getColumnSearchProps('codeInspectionCompany'),
