@@ -25,7 +25,6 @@ axios.interceptors.response.use(
         return response
     },
     (error)=>{
-        console.log(error.response.status);
         var loader = document.getElementById('loader');
         loader.classList.add("d-none");
         if(error.response.status===401){
@@ -51,7 +50,6 @@ axios.interceptors.response.use(
 
 
                 }).catch((err) => {
-                console.log(err);
             })
         }
         return Promise.reject(error);

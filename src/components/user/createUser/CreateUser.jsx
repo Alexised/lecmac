@@ -20,7 +20,6 @@ const CreateUser = () => {
     setLoading(true);
     try {
       let url = `${import.meta.env.VITE_BASE_URL}`;
-      console.log(values.roleId)
       let body=values
       if (values.roleId === 1) {
         url += 'users'
@@ -50,10 +49,6 @@ const CreateUser = () => {
       }
     };
 
-    const onFinishFailed = (errorInfo) => {
-      console.log('Failed:', errorInfo);
-    };
-
     return (
       <div>
         <h1>            Crear Usuario</h1>
@@ -62,7 +57,6 @@ const CreateUser = () => {
           layout="vertical"
           name="create_user"
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             name="roleId"

@@ -187,7 +187,6 @@ const FillForm = ({ show }) => {
           Authorization: token
         }
       });
-      console.log(response)
       if (response.status === 200) {
         Swal.fire("Creado", `¡Formulario creado exitosamente! ID:${response.data.id} `, "success");
       } else {

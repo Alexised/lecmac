@@ -25,7 +25,6 @@ const ForgotPassword = () => {
             email,
           })
           .then((res) => {
-            console.log("Correo enviado exitosamente")
             enqueueSnackbar('Correo enviado exitosamente', { variant: 'success' }); 
           })
           .catch((err) => {
