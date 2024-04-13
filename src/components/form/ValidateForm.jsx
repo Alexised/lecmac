@@ -45,7 +45,7 @@ const ValidateForm = () => {
         width: '100%',
       }}
     >
-      <h1 style={{ color: "black", textAlign: "center" }}>Busca por ticket</h1>
+      <h1 style={{ color: "black", textAlign: "center" }}>Busca por id</h1>
       <div
         style={{
           display: "flex",
