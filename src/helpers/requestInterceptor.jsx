@@ -36,7 +36,7 @@ axios.interceptors.response.use(
             }
             else
             {
-                Swal.fire("Error","Datos de inicio de session incorrectos","error");
+                Swal.fire("Error","Datos de inicio de sesion incorrectos","error");
                 
             }
         }
