@@ -29,7 +29,6 @@ function Sidebar(props) {
                   <span className="ms-1 d-none d-sm-inline ">Dashboard</span>
                 </NavLink>
               </li>
-            {user.roleId===1 ? (
               <li>
                 <NavLink
                   activeclassname="is-active"
@@ -40,9 +39,6 @@ function Sidebar(props) {
                   <span className="ms-1 d-none d-sm-inline ">Formularios</span>
                 </NavLink>
               </li>
-            ) : (
-              ""
-            )}
             {user.roleId=== 1 ? (
               <>
               <li>

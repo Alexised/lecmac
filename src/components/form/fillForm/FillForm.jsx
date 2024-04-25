@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import moment from 'moment';
 import html2canvas from 'html2canvas';
 import logo from "../../../assets/logo.jpg";
+import jsPDF from 'jspdf';
 
 const FillForm = ({ show }) => {
   const [form] = Form.useForm();
@@ -149,17 +150,17 @@ const FillForm = ({ show }) => {
   };
   const handleDownload = () => {
     const container = document.getElementById('fillFormContainer');
-
+  
     html2canvas(container).then(canvas => {
-      const url = canvas.toDataURL();
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'formulario.png';
-      document.body.appendChild(link);
-      link.click();
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; // Tamaño A4 en mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('formulario.pdf');
     });
   };
-
   const onFinish = async (values) => {
     try {
       const formDataToSend = {
@@ -227,11 +228,20 @@ const FillForm = ({ show }) => {
       onFinish={onFinish}
     >
       <div id="fillFormContainer">
-        <div style={{ textAlign: 'center' }}>
-          <Typography.Title level={2}>CENTRO DE ENTRENAMIENTO</Typography.Title>
-          <Typography.Title level={4}>{formData.name} - {formData.code}</Typography.Title>
-          {show && <Typography.Title level={4}>ID: {code}</Typography.Title>}
-        </div>
+      <div style={{ position: 'relative', textAlign: 'center' }}>
+  <Typography.Title level={2}>CENTRO DE ENTRENAMIENTO</Typography.Title>
+  <Typography.Title level={4}>{formData.name} - {formData.code}</Typography.Title>
+  {show && <Typography.Title level={4}>ID: {code}</Typography.Title>}
+  <div style={{ position: 'absolute', top: 0, right: 0 }}>
+    <Col lg={4} xs={24}>
+      <Form.Item name="imageProduct">
+        <a href="https://app.lecmac.com/validate" target="_blank" rel="noopener noreferrer">
+          <img key="imageProduct" src={`${logo}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+        </a>
+      </Form.Item>
+    </Col>
+  </div>
+</div>
         <Row >
           <Col lg={3} xs={24}>
             <Label className="form-label">Nombre de la Empresa</Label>
@@ -466,26 +476,6 @@ const FillForm = ({ show }) => {
               <Input readOnly={show} onChange={(e) => handleChange("reviewedBy", e.target.value)} />
             </Form.Item>
           </Col>
-          {show == true && (
-            <>
-              <Col lg={2} xs={24}>
-                <Label className="form-label">Imagen del Producto</Label>
-                <Form.Item
-                  name="imageProduct"
-                >
-                  <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
-                </Form.Item>
-              </Col>
-              <Col lg={2} xs={24}>
-                <Label className="form-label">Imagen del Producto</Label>
-                <Form.Item
-                  name="imageProduct"
-                >
-                  <img key="imageProduct2" src={`${imageBase}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
-                </Form.Item>
-              </Col>
-            </>
-          )}
           {show != true && (
             <Col lg={3} xs={24}>
               <Label className="form-label">Firma</Label>
@@ -520,12 +510,31 @@ const FillForm = ({ show }) => {
           </Col>
           {show == true && (
             <>
-              <Col lg={4} xs={24}>
-                <Label className="form-label">Certificado por</Label>
+              <Col lg={6} xs={24}>
+                <h3>
+                  puede validar el certificado en lecmac.com
+                </h3>
+              </Col>
+            </>
+          )}
+        </Row>
+        <Row>
+          {show == true && (
+            <>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
                 <Form.Item
                   name="imageProduct"
                 >
-                  <img key="imageProduct" src={`${logo}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '100px' }} />
+                  <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                </Form.Item>
+              </Col>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct2" src={`${imageBase}`} alt="Firma" style={{ maxWidth: '400px', maxHeight: '400px' }} />
                 </Form.Item>
               </Col>
             </>
