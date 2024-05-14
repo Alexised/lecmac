@@ -22,7 +22,7 @@ const FillForm = ({ show }) => {
   const [selectedSignature, setSelectedSignature] = useState('');
   const [imageBase64, setImageBase64] = useState('');
   const [imageBase, setImageBase] = useState('');
-
+  const [containerStyle, setContainerStyle] = useState({});
 
   const fetchSignatures = async (code) => {
     try {
@@ -149,18 +149,30 @@ const FillForm = ({ show }) => {
       setActivities(data.activities);
     }
   };
-  const handleDownload = async () => {
+
+  const handleDownload = async () => {3
+    const newContainerStyle = {
+      maxWidth: "8.5in",
+      margin: "0 auto",
+    };
+    setContainerStyle(newContainerStyle)
     const container = document.getElementById('fillFormContainer');
     const img = document.getElementById('fillFormimg');
     container.appendChild(img);
+
     html2pdf(container, {
-      margin: 10,
       filename: 'formulario.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { dpi: 192, letterRendering: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait' // Configuración para orientación horizontal
+      }
     });
+    setContainerStyle({});
   };
+
   const onFinish = async (values) => {
     try {
       const formDataToSend = {
@@ -227,19 +239,20 @@ const FillForm = ({ show }) => {
       form={form}
       onFinish={onFinish}
     >
-      <div id="fillFormContainer">
-        <div style={{ position: 'relative', textAlign: 'center' }}>
-          <Typography.Title level={2}>CENTRO DE ENTRENAMIENTO</Typography.Title>
-          <Typography.Title level={4}>{formData.name} - {formData.code}</Typography.Title>
-          {show && <Typography.Title level={4}>ID: {code}</Typography.Title>}
-          <div style={{ position: 'absolute', top: 0, right: 0 }}>
-            <Col lg={4} xs={24}>
-              <Form.Item name="imageProduct">
-                <a href="https://app.lecmac.com/validate" target="_blank" rel="noopener noreferrer">
-                  <img key="imageProduct" src={`${logo}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                </a>
-              </Form.Item>
-            </Col>
+      <div id="fillFormContainer" style={containerStyle} >
+        <div style={{ position: 'relative', textAlign: 'center', minHeight: '300px' }}>
+          {/* Contenedor para el texto */}
+          <div style={{ position: 'absolute', top: 0, right: 0, width: '20%' }}>
+            {/* Contenedor para la imagen */}
+            <a href="https://app.lecmac.com/validate" target="_blank" rel="noopener noreferrer">
+              <img key="imageProduct" src={`${logo}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+            </a>
+          </div>
+          {/* Contenedor principal */}
+          <div style={{ paddingLeft: '10%', paddingRight: '25%' }}>
+            <Typography.Title level={2}>CENTRO DE ENTRENAMIENTO</Typography.Title>
+            <Typography.Title level={4}>{formData.name} - {formData.code}</Typography.Title>
+            {show && <Typography.Title level={4}>ID: {code}</Typography.Title>}
           </div>
         </div>
         <Row >
@@ -518,30 +531,29 @@ const FillForm = ({ show }) => {
             </>
           )}
         </Row>
+        <Row id="fillFormimg" >
+          {show == true && (
+            <>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                </Form.Item>
+              </Col>
+              <Col lg={2} xs={24}>
+                <Label className="form-label">Imagen del Producto</Label>
+                <Form.Item
+                  name="imageProduct"
+                >
+                  <img key="imageProduct2" src={`${imageBase}`} alt="Firma" style={{ maxWidth: '400px', maxHeight: '400px' }} />
+                </Form.Item>
+              </Col>
+            </>
+          )}
+        </Row>
       </div>
-      <Row id="fillFormimg" style={{pageBreakBefore: "always"}}>
-
-        {show == true && (
-          <>
-            <Col lg={2} xs={24}>
-              <Label className="form-label">Imagen del Producto</Label>
-              <Form.Item
-                name="imageProduct"
-              >
-                <img key="imageProduct" src={`${imageBase64}`} alt="Firma" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-              </Form.Item>
-            </Col>
-            <Col lg={2} xs={24}>
-              <Label className="form-label">Imagen del Producto</Label>
-              <Form.Item
-                name="imageProduct"
-              >
-                <img key="imageProduct2" src={`${imageBase}`} alt="Firma" style={{ maxWidth: '400px', maxHeight: '400px' }} />
-              </Form.Item>
-            </Col>
-          </>
-        )}
-      </Row>
 
       {show !== true ? (
         <Form.Item style={{ textAlign: 'right' }}>
@@ -550,9 +562,11 @@ const FillForm = ({ show }) => {
           </Button>
         </Form.Item>
       ) : (
-        <Button type="primary" onClick={handleDownload} style={{ marginRight: '10px' }}>
-          Descargar Certificado
-        </Button>
+        <Form.Item style={{ textAlign: 'right' }}>
+          <Button type="primary" onClick={handleDownload} style={{ marginRight: '10px' }}>
+            Descargar Certificado
+          </Button>
+        </Form.Item>
       )}
     </Form>
   );
