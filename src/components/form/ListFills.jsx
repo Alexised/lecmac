@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Input, Button, Space } from 'antd';
+import { Table, Input, Button, Space, Popconfirm } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { SearchOutlined, EyeOutlined } from '@ant-design/icons'; // Importar el ícono de "ver" desde antd
+import { SearchOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons'; // Importar el ícono de "ver" desde antd
 import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
+const token = localStorage.getItem('token');
+import Swal from "sweetalert2";
 
 const ListFills = () => {
   const [forms, setForms] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-
+  const userDetail = JSON.parse(localStorage.getItem('user'));
+  const [loading, setLoading] = useState(false);
+  const roleId = userDetail.roleId;
+  let url = `${import.meta.env.VITE_BASE_URL}fills`;
   useEffect(() => {
     // Cargar los formularios al montar el componente
     fetchForms();
@@ -26,7 +31,7 @@ const ListFills = () => {
 
   const getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      
+
       <div style={{ padding: 8 }}>
         <Input
           ref={node => {
@@ -72,6 +77,29 @@ const ListFills = () => {
         text
       ),
   });
+
+  const handleEliminar = async(code) => {
+    try {
+        
+        setLoading(true);
+        const response = await axios.delete(`${url}/${code}`, {
+            headers: {
+                Authorization: `Bearer ${token}` // Agregar el token JWT a los encabezados de la solicitud
+            }});
+        if (response.status === 200) {
+            Swal.fire('Éxito', 'Formulario eliminado correctamente', 'success');
+            fetchForms();
+            // Aquí podrías realizar cualquier acción adicional, como actualizar la lista de formularios mostrados en tu interfaz
+        } else {
+            Swal.fire('Error', 'Error al eliminar el formulario', 'error');
+        }
+    } catch (error) {
+        console.error('Error al eliminar el formulario:', error);
+        Swal.fire('Error', 'Error al eliminar el formulario', 'error');
+    } finally {
+        setLoading(false);
+    }
+};
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -125,11 +153,28 @@ const ListFills = () => {
       title: 'Acción',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <Link to={`/show/form/${record.id}`}>
-            <Button  style={{backgroundColor: '#3E710C'}} type="primary" icon={<EyeOutlined />} >Ver</Button>
-          </Link>
-        </Space>
+        <>
+
+          <Space size="middle">
+            {roleId === 1 && ( // Only show edit and delete buttons for admin (roleId === 1)
+              <>
+                <Popconfirm
+                  title="¿Estás seguro de eliminar este registro?"
+                  onConfirm={() => handleEliminar(record.id)}
+                  okText="Sí"
+                  cancelText="No"
+                >
+                  <Button type="link" danger icon={<DeleteOutlined />} style={{ color: 'red' }} />
+                </Popconfirm>
+              </>
+            )}
+          </Space>
+          <Space size="middle">
+            <Link to={`/show/form/${record.id}`}>
+              <Button style={{ backgroundColor: '#3E710C' }} type="primary" icon={<EyeOutlined />} >Ver</Button>
+            </Link>
+          </Space>
+        </>
       ),
     },
   ];

@@ -33,7 +33,7 @@ const ListForms = () => {
     }, []);
     const handleEliminar = async(code) => {
         try {
-            
+
             setLoading(true);
             const response = await axios.delete(`${url}/${code}`, {
                 headers: {
